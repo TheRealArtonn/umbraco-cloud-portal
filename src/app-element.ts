@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 import { Router } from '@vaadin/router';
+import defaultCSS from './shared/default-css';
 
 export class App extends LitElement {
   @property({ type: String }) title = 'My app';
@@ -8,61 +9,58 @@ export class App extends LitElement {
 
   firstUpdated() {
     this.router = new Router(
-      this.shadowRoot!.getElementById('outlet') as HTMLElement
+      this.shadowRoot!.getElementById('container') as HTMLElement
     );
     this.router.setRoutes([
       { path: '/', component: 'dashboard-element' },
       { path: '/organization', component: 'organization-element' },
+      {
+        path: '/project/',
+        component: 'project-element',
+        children: [
+          {
+            path: '/:alias',
+            component: 'div',
+            children: [
+              {
+                path: '/',
+                component: 'project-overview',
+              },
+              {
+                path: '/environments',
+                component: 'project-environments',
+              },
+            ],
+          },
+        ],
+      },
     ]);
   }
 
-  static styles = css`
-    :host {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      font-size: calc(10px + 2vmin);
-      color: #1a2b42;
-      max-width: 960px;
-      margin: 0 auto;
-      text-align: center;
-      background-color: var(--umbraco-cloud-portal-background-color);
-    }
-
-    main {
-      flex-grow: 1;
-    }
-
-    .logo {
-      margin-top: 36px;
-      animation: app-logo-spin infinite 20s linear;
-    }
-
-    @keyframes app-logo-spin {
-      from {
-        transform: rotate(0deg);
+  static styles = [
+    defaultCSS,
+    css`
+      :host {
+        width: 100vw;
+        height: 100vh;
+        font-size: 16px;
+        color: #1a2b42;
+        background-color: var(--umbraco-cloud-portal-background-color, #f3f3f5);
+        display: flex;
+        flex-direction: column;
       }
-      to {
-        transform: rotate(360deg);
+
+      #container {
+        height: 100%;
+        display: flex;
       }
-    }
-
-    .app-footer {
-      font-size: calc(12px + 0.5vmin);
-      align-items: center;
-    }
-
-    .app-footer a {
-      margin-left: 5px;
-    }
-  `;
+    `,
+  ];
 
   render() {
     return html`
-      <ucp-project-sidemenu></ucp-project-sidemenu>
-      <div id="outlet"></div>
+      <navigation-header></navigation-header>
+      <div id="container"></div>
     `;
   }
 }

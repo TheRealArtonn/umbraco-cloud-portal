@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 
-export class DashboardElement extends LitElement {
+export class OrganizationElement extends LitElement {
   static styles = css`
     :host {
       width: 100%;
@@ -21,14 +21,14 @@ export class DashboardElement extends LitElement {
   `;
 
   @property({ type: String, attribute: 'page' })
-  page: string = 'dashboard';
+  page: string = 'organization';
 
   render() {
     return html`
       <side-menu page=${this.page}></side-menu>
       <main>
         <header></header>
-        <div id="page">text</div>
+        <page-container></page-container>
       </main>
     `;
   }

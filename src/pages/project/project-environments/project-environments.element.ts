@@ -1,12 +1,12 @@
 import { LitElement, html, css } from 'lit';
 
-export class OrganizationElement extends LitElement {
+export class ProjectEnvironments extends LitElement {
   static styles = css`
     :host {
     }
   `;
 
   render() {
-    return html`test`;
+    return html` environments `;
   }
 }

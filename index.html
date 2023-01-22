@@ -13,16 +13,42 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@umbraco-ui/uui-css@latest/dist/uui-css.css"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
     <title>umbraco-cloud-portal</title>
   </head>
+  <style>
+    * {
+      padding: 0px;
+      margin: 0px;
+      box-sizing: border-box;
+    }
+    article,
+    aside,
+    details,
+    figcaption,
+    figure,
+    footer,
+    header,
+    hgroup,
+    main,
+    nav,
+    section,
+    summary {
+      display: block;
+    }
 
+    :root {
+      --ucp-unfocused-text-color: #7d88b0;
+    }
+  </style>
   <body>
     <app-element></app-element>
 
     <script type="module" src="./out-tsc/src/app.js"></script>
-    <script
-      type="module"
-      src="./out-tsc/src/project-sidemenu/index.js"
-    ></script>
   </body>
 </html>
