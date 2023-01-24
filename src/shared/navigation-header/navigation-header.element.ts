@@ -90,18 +90,18 @@ export class NavigationHeader extends LitElement {
           </a>
         </div>
         <nav>
-          <button-medium></button-medium>
-          <button-medium></button-medium>
+          <button-medium .icon=${'add'}></button-medium>
+          <button-medium .icon=${'search'}></button-medium>
           <div class="separator"></div>
           <button-medium 
             .link=${'/'} 
             .icon=${'projects'}
-            .active=${this.page === 'dashboard' ? true : false}
+            .active=${this.page === 'dashboard' ? 'active' : undefined}
           ></button-medium>
           <button-medium .link=${'/organization/'} .icon=${'organization'}></button-medium>></button-medium>
           <div class="separator"></div>
-          <button-medium></button-medium>
-          <button-medium></button-medium>
+          <button-medium .icon=${'notifications'}></button-medium>
+          <button-medium .icon=${'notifications'}></button-medium>
         </nav>
       </header>
     `;

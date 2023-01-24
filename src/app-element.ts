@@ -1,11 +1,14 @@
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
-import { Router } from '@vaadin/router';
+import { Router, RouterLocation } from '@vaadin/router';
 import defaultCSS from './shared/default-css';
 
 export class App extends LitElement {
   @property({ type: String }) title = 'My app';
   router: any;
+
+  @property({ type: Object })
+  location: any;
 
   firstUpdated() {
     this.router = new Router(
@@ -30,11 +33,30 @@ export class App extends LitElement {
                 path: '/environments',
                 component: 'project-environments',
               },
+              {
+                path: '/edit-teams',
+                component: 'project-edit-teams',
+              },
+              {
+                path: '/usage',
+                component: 'project-usage',
+              },
             ],
           },
         ],
       },
     ]);
+
+    this.location = this.router.location;
+  }
+  protected willUpdate() {
+    // this.location.getUrl();
+  }
+  onAfterEnter(location: RouterLocation) {
+    // this.projectId = String(location.params.alias);
+    console.log(location);
+    // console.log(commands);
+    // console.log(router);
   }
 
   static styles = [

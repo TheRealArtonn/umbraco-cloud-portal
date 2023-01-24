@@ -8,6 +8,7 @@ export class HeaderContainer extends LitElement {
     css`
       :host {
         width: 100%;
+        color: #1b264f;
         margin-bottom: 35px;
       }
 
@@ -24,7 +25,7 @@ export class HeaderContainer extends LitElement {
       }
 
       #color-identity {
-        width: 10px;
+        width: 5px;
         height: 55px;
         background-color: #d0a5f3;
         border-radius: 4px;

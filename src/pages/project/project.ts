@@ -1,4 +1,4 @@
-import { RouterLocation } from '@vaadin/router';
+import { PreventCommands, Router, RouterLocation } from '@vaadin/router';
 import { LitElement, html, css } from 'lit';
 import { property } from 'lit/decorators.js';
 
@@ -17,37 +17,41 @@ export class ProjectElement extends LitElement {
       overflow: hidden;
     }
 
-    div {
+    #page {
       display: flex;
       flex-direction: column;
-    }
-
-    #page {
-      width: 1160px;
     }
   `;
 
   @property({ type: String, attribute: 'page' })
   page: string = 'project';
 
+  @property()
+  subpage: string = 'Overview';
+
   @property({ type: String, attribute: 'project-id' })
   projectId: string = '';
 
-  onAfterEnter(location: RouterLocation) {
-    this.projectId = String(location.params.alias);
-    // console.log(location);
-    // console.log(commands);
-    // console.log(router);
+  onAfterEnter(
+    location: RouterLocation,
+    commands: PreventCommands,
+    router: Router
+  ) {
+    // this.projectId = String(location.params.alias);
+    // console.log(this.projectId);
+    console.log(location);
+    console.log(commands);
+    console.log(router);
   }
 
   render() {
     return html`
       <side-menu page=${this.page} project-id=${this.projectId}></side-menu>
       <main>
-        <div>
+        <div id="page">
           <header-container></header-container>
           <page-container id="subpage">
-            <span slot="title">text</span>
+            <span slot="title">${this.page}</span>
             <slot slot="content"></slot>
           </page-container>
         </div>

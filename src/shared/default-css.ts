@@ -6,8 +6,6 @@ export default css`
   } */
 
   * {
-    padding: 0px;
-    margin: 0px;
     box-sizing: border-box;
     font-family: 'Lato', sans-serif;
   }

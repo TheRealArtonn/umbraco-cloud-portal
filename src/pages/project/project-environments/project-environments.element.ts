@@ -7,6 +7,6 @@ export class ProjectEnvironments extends LitElement {
   `;
 
   render() {
-    return html` environments `;
+    return html`Environments manipulation and information`;
   }
 }

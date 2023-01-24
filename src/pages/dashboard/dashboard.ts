@@ -13,10 +13,18 @@ export class DashboardElement extends LitElement {
       padding: 40px 0px;
       display: flex;
       justify-content: center;
+      overflow: hidden;
     }
 
     #page {
-      width: 1160px;
+      width: 1414px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #group {
+      display: flex;
+      justify-content: space-between;
     }
   `;
 
@@ -27,8 +35,12 @@ export class DashboardElement extends LitElement {
     return html`
       <side-menu page=${this.page}></side-menu>
       <main>
-        <header></header>
-        <div id="page">text</div>
+        <div id="page">
+          <div id="group">
+            <project-card></project-card>
+            <project-card></project-card>
+          </div>
+        </div>
       </main>
     `;
   }

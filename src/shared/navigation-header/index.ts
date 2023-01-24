@@ -1,4 +1,4 @@
-import '../../components/button-medium';
+import '../../components/button-medium-icon';
 
 import { NavigationHeader } from './navigation-header.element';
 

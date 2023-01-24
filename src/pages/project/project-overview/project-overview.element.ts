@@ -7,6 +7,6 @@ export class ProjectOverview extends LitElement {
   `;
 
   render() {
-    return html`Overview `;
+    return html`Cool stats about the project and project resource usage`;
   }
 }

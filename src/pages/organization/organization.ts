@@ -13,10 +13,12 @@ export class OrganizationElement extends LitElement {
       padding: 40px 0px;
       display: flex;
       justify-content: center;
+      overflow: hidden;
     }
 
-    #page {
-      width: 1160px;
+    div {
+      display: flex;
+      flex-direction: column;
     }
   `;
 
@@ -27,8 +29,10 @@ export class OrganizationElement extends LitElement {
     return html`
       <side-menu page=${this.page}></side-menu>
       <main>
-        <header></header>
-        <page-container></page-container>
+        <div>
+          <header-container></header-container>
+          <page-container></page-container>
+        </div>
       </main>
     `;
   }

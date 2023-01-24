@@ -1,6 +1,8 @@
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
-import { icons } from './svg/icons';
+import { smallIcons } from '../../shared/svg/icons';
+
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 import defaultCSS from '../../shared/default-css';
 
@@ -43,10 +45,10 @@ export class ButtonMedium extends LitElement {
   ];
 
   @property()
-  active: boolean = false;
+  active: string | undefined = undefined;
 
   @property()
-  link: string = '';
+  link: string | undefined = undefined;
 
   @property()
   icon: string = '';
@@ -54,10 +56,10 @@ export class ButtonMedium extends LitElement {
   render() {
     return html` <a
       id="button"
-      class=${this.active === true ? 'active' : ''}
-      href=${this.link}
+      class=${ifDefined(this.active)}
+      href=${ifDefined(this.link)}
     >
-      ${icons[this.icon]}
+      ${smallIcons[this.icon]}
     </a>`;
   }
 }

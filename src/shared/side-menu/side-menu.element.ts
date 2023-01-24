@@ -36,9 +36,10 @@ export class SideMenu extends LitElement {
     return html`
       <aside>
         <nav>
-          <a href="project/project1">overview</a>
-          <a href="">overview</a>
-          <a href="">overview</a>
+          <a href="project/2da12-s234-ss12-sd32/">Overview</a>
+          <a href="project/2da12-s234-ss12-sd32/environments">Environments</a>
+          <a href="project/2da12-s234-ss12-sd32/edit-teams">Edit teams</a>
+          <a href="project/2da12-s234-ss12-sd32/usage">Usage</a>
         </nav>
       </aside>
     `;

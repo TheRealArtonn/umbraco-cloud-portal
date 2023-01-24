@@ -4,6 +4,8 @@ import '../../components/page-container';
 
 import './project-overview';
 import './project-environments';
+import './project-edit-teams';
+import './project-usage';
 
 import { ProjectElement } from './project';
 
