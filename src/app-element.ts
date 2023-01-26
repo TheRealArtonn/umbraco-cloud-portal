@@ -49,7 +49,7 @@ export class App extends LitElement {
 
     this.location = this.router.location;
   }
-  protected willUpdate() {
+  willUpdate() {
     // this.location.getUrl();
   }
   onAfterEnter(location: RouterLocation) {

@@ -1,5 +1,7 @@
 import { css, html, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { subpageFixture } from '../../api/api-subpages.fixture';
+import { Category } from '../../api/api.resource';
 
 import defaultCSS from '../default-css';
 
@@ -24,22 +26,48 @@ export class SideMenu extends LitElement {
   @property({ type: String, attribute: 'page' })
   page: string = '';
 
+  @property({ type: String, attribute: 'subPage' })
+  subPage: string = '';
+
   @property({ type: String, attribute: 'project-id' })
   projectId: string = '';
 
-  willUpdate() {
-    // console.log(this.projectId);
-    // console.log(this.page);
+  @state()
+  _subpageSettings: Array<Category> = [];
+
+  firstUpdated() {
+    this.getData();
+  }
+
+  private async getData() {
+    try {
+      const [subpageSettings] = await Promise.all([subpageFixture]);
+
+      if (subpageSettings) {
+        this._subpageSettings = subpageSettings;
+      }
+    } catch (error) {
+      console.log('Projects could not be fetched');
+    }
+  }
+
+  private _setPage(subPage) {
+    this.subPage = subPage;
+    console.log(this.subPage);
   }
 
   render() {
     return html`
       <aside>
         <nav>
-          <a href="project/2da12-s234-ss12-sd32/">Overview</a>
-          <a href="project/2da12-s234-ss12-sd32/environments">Environments</a>
-          <a href="project/2da12-s234-ss12-sd32/edit-teams">Edit teams</a>
-          <a href="project/2da12-s234-ss12-sd32/usage">Usage</a>
+          <a
+            href="project/${this.projectId}/"
+            @click=${() => this._setPage('overview')}
+            >Overview</a
+          >
+          <a href="project/${this.projectId}/environments">Environments</a>
+          <a href="project/${this.projectId}/edit-teams">Edit teams</a>
+          <a href="project/${this.projectId}/usage">Usage</a>
         </nav>
       </aside>
     `;

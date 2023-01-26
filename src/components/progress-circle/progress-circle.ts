@@ -1,4 +1,4 @@
-import { css, html, LitElement } from 'lit';
+import { css, LitElement, svg } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import defaultCSS from '../../shared/default-css';
@@ -7,32 +7,28 @@ export class ProgressCircle extends LitElement {
   static styles = [
     defaultCSS,
     css`
-      #progress {
-        width: 50px;
-        height: 50px;
-        background-color: #f4f4f6;
-        border-radius: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: Relative;
-        overflow: hidden;
+      :host {
+        display: block;
+      }
+      .background {
+        fill: none;
+        stroke: black;
+        stroke-opacity: 0.05;
+      }
+      .indicator {
+        fill: none;
       }
 
-      #text {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
+      text {
+        font-size: 2em;
+        font-family: 'Lato', sans-serif;
+        text-anchor: middle;
       }
 
       #counter {
         font-size: 12px;
         font-weight: 600;
         color: #1b264f;
-        z-index: 10;
-        margin-top: 2px;
       }
 
       #small-text {
@@ -40,109 +36,65 @@ export class ProgressCircle extends LitElement {
         color: #bebebe;
         z-index: 10;
         margin-top: -2px;
-      }
-
-      #progress .overlay {
-        width: 50%;
-        height: 100%;
-        position: Absolute;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        background-color: #f4f4f6;
-      }
-
-      #progress .left,
-      #progress .right {
-        width: 50%;
-        height: 100%;
-        position: Absolute;
-        top: 0;
-        left: 0;
-        border: 5px Solid #e0e3f3;
-        border-radius: 100px 0px 0px 100px;
-        border-right: 0;
-        transform-origin: Right;
-      }
-
-      #progress .left {
-        animation: Load1 1s Linear Forwards;
-      }
-
-      #progress:nth-of-type(2) .right,
-      #progress:nth-of-type(3) .right {
-        animation: Load2 0.5s Linear Forwards 1s;
-      }
-
-      #progress:last-of-type .right,
-      #progress:first-of-type .right {
-        animation: Load3 0.8s Linear Forwards 1s;
-      }
-
-      @keyframes Load1 {
-        0% {
-          transform: Rotate(0deg);
-        }
-
-        100% {
-          transform: Rotate(180deg);
-        }
-      }
-
-      @keyframes Load2 {
-        0% {
-          z-index: 100;
-          transform: Rotate(180deg);
-        }
-
-        100% {
-          z-index: 100;
-          transform: Rotate(270deg);
-        }
-      }
-
-      @keyframes Load3 {
-        0% {
-          z-index: 100;
-          transform: Rotate(180deg);
-        }
-
-        100% {
-          z-index: 100;
-          transform: Rotate(315deg);
-        }
+        position: absolute;
       }
     `,
   ];
+
+  @property({ type: Number })
+  value: number = 20;
+
+  @property({ type: String })
+  color: string = '#E0E3F3';
 
   @property()
   standardText: string = 'used';
 
   @property()
-  progress: number = 60;
+  bandwidthMaxValue: number = 100;
 
-  //TODO: Make functional, problems with changing bars
+  @property()
+  storageMaxValue: number = 100;
+
+  @property()
+  domainMaxValue: number = 10;
+
+  @property()
+  domain: boolean = false;
 
   render() {
-    return html`
-      <div id="progress">
-        <!-- <div id="percentage"></div>
-        <div id="text">${this.standardText}</div> -->
-        <div id="text">
-          <span
-            id="counter"
-            class="Title Timer"
-            Data-From="0"
-            Data-To="${this.progress}"
-            Data-Speed="1800"
-            >${this.progress}%</span
-          >
-          <div id="small-text">${this.standardText}</div>
-        </div>
-        <div class="overlay"></div>
-        <div class="left"></div>
-        <div class="right"></div>
-      </div>
+    const value = Math.min(100, Math.max(0, this.value));
+
+    const dx = Math.sin((value / 100.0) * 2 * 3.14) * 50;
+    const dy = -Math.cos((value / 100.0) * 2 * 3.14) * 50 + 50;
+    const sweep = value > 50 ? 1 : 0;
+    const stroke = 13;
+
+    return svg`
+      <svg style="height: 51px" viewbox="0 0 120 120">
+        <path
+          class="background"
+          stroke-width="${stroke}"
+          d="M60 10 a 50 50 0 1 0 1 0 Z"
+        />
+        <path
+          class="indicator"
+          stroke="${this.color}"
+          stroke-width="${stroke}"
+          d="M60 10 a 50 50 0 ${sweep} 1 ${dx} ${dy}"
+        />
+        <text x="60" y="70">
+          ${
+            this.domain == false
+              ? svg`<tspan x="64" y="62" color="#1b264f" font-weight="600" font-size="0.750em">${value}%</tspan>`
+              : svg`<tspan x="64" y="62" color="#1b264f" font-weight="600" font-size="0.750em">${value}/${this.domainMaxValue}</tspan>`
+          }
+
+          <tspan x="60" y="80" color="#bebebe" font-size="0.500em">${
+            this.standardText
+          }</tspan>
+        </text>
+      </svg>
     `;
   }
 }

@@ -1,5 +1,8 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
+import { projectsFixture } from '../../api/api-projects.fixture';
+import { Project } from '../../api/api.resource';
 
 export class DashboardElement extends LitElement {
   static styles = css`
@@ -31,14 +34,35 @@ export class DashboardElement extends LitElement {
   @property({ type: String, attribute: 'page' })
   page: string = 'dashboard';
 
+  @state()
+  _projectSettings: Array<Project> = [];
+
+  firstUpdated() {
+    this.getData();
+  }
+
+  private async getData() {
+    try {
+      const [projectSettings] = await Promise.all([projectsFixture]);
+
+      this._projectSettings = projectSettings;
+    } catch (error) {
+      console.log('Projects could not be fetched');
+    }
+  }
+
   render() {
     return html`
       <side-menu page=${this.page}></side-menu>
       <main>
         <div id="page">
           <div id="group">
-            <project-card></project-card>
-            <project-card></project-card>
+            ${repeat(
+              this._projectSettings,
+              project => project.id,
+              project =>
+                html` <project-card .projectSetting=${project}></project-card>`
+            )}
           </div>
         </div>
       </main>

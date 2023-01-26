@@ -1,6 +1,6 @@
-import { MenuItem, ProjectItem } from './api.resource';
+// import { MenuItem, ProjectItem } from './api.resource';
 
-export const fakeMenuFixture: MenuItem[] = [
+export const fakeMenuFixture = [
   {
     name: 'General',
     icon: 'general',
@@ -93,7 +93,7 @@ export const fakeMenuFixture: MenuItem[] = [
   },
 ];
 
-export const fakeProjectsFixture: ProjectItem[] = [
+export const fakeProjectsFixture = [
   {
     name: 'East clients',
     projects: [

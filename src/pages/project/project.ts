@@ -1,6 +1,9 @@
-import { PreventCommands, Router, RouterLocation } from '@vaadin/router';
+import { RouterLocation } from '@vaadin/router';
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
+import { projectsFixture } from '../../api/api-projects.fixture';
+import { subpageFixture } from '../../api/api-subpages.fixture';
+import { Project, Category } from '../../api/api.resource';
 
 export class ProjectElement extends LitElement {
   static styles = css`
@@ -21,6 +24,10 @@ export class ProjectElement extends LitElement {
       display: flex;
       flex-direction: column;
     }
+
+    #title {
+      text-transform: capitalize;
+    }
   `;
 
   @property({ type: String, attribute: 'page' })
@@ -32,26 +39,65 @@ export class ProjectElement extends LitElement {
   @property({ type: String, attribute: 'project-id' })
   projectId: string = '';
 
-  onAfterEnter(
-    location: RouterLocation,
-    commands: PreventCommands,
-    router: Router
-  ) {
-    // this.projectId = String(location.params.alias);
-    // console.log(this.projectId);
-    console.log(location);
-    console.log(commands);
-    console.log(router);
+  @state()
+  _projectSetting: Project = {} as Project;
+
+  @state()
+  _subpageSettings: Array<Category> = [];
+
+  // connectedCallback(): void {
+  //   window.addEventListener('popstate', event => {
+  //     console.log(
+  //       `location: ${document.location}, state: ${JSON.stringify(event.state)}`
+  //     );
+  //   });
+  // }
+
+  // disconnectedCallback(): void {}
+
+  firstUpdated() {
+    this.getData();
+  }
+
+  onAfterEnter(location: RouterLocation) {
+    this.projectId = String(location.params.alias);
+  }
+
+  private async getData() {
+    try {
+      const [projectSettings, subpageSettings] = await Promise.all([
+        projectsFixture,
+        subpageFixture,
+      ]);
+
+      const projectSetting = projectSettings.find(
+        project => project.id === this.projectId
+      );
+
+      if (projectSetting) {
+        this._projectSetting = projectSetting;
+      }
+
+      if (subpageSettings) {
+        this._subpageSettings = subpageSettings;
+      }
+    } catch (error) {
+      console.log('Projects could not be fetched');
+    }
   }
 
   render() {
     return html`
-      <side-menu page=${this.page} project-id=${this.projectId}></side-menu>
+      <side-menu .projectId=${this._projectSetting.id}></side-menu>
       <main>
         <div id="page">
-          <header-container></header-container>
+          <header-container
+            .colorIdentity=${this._projectSetting.colorId}
+            .projectName=${this._projectSetting.name}
+            .pageBreadcrumb=${'test'}
+          ></header-container>
           <page-container id="subpage">
-            <span slot="title">${this.page}</span>
+            <span id="title" slot="title">${this.page}</span>
             <slot slot="content"></slot>
           </page-container>
         </div>

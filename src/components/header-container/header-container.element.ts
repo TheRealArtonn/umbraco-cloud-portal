@@ -41,9 +41,16 @@ export class HeaderContainer extends LitElement {
 
       p {
         color: var(--ucp-unfocused-text-color);
+        margin-top: 0px;
       }
     `,
   ];
+
+  @property()
+  colorIdentity: string = '';
+
+  @property()
+  projectName: string = '';
 
   @property()
   pageBreadcrumb: string = '';
@@ -52,10 +59,13 @@ export class HeaderContainer extends LitElement {
     return html`
       <header>
         <div id="info">
-          <div id="color-identity"></div>
+          <div
+            id="color-identity"
+            style="background-color: ${this.colorIdentity}"
+          ></div>
           <div id="text">
-            <h1>Anubias market</h1>
-            <p>/ Environments</p>
+            <h1>${this.projectName}</h1>
+            <p>/ ${this.pageBreadcrumb}</p>
           </div>
         </div>
         <button-large-outline-icon></button-large-outline-icon>

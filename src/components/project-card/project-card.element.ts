@@ -1,4 +1,7 @@
 import { css, html, LitElement } from 'lit';
+import { property } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
+import { Project } from '../../api/api.resource';
 
 import defaultCSS from '../../shared/default-css';
 
@@ -35,6 +38,12 @@ export class ProjectCard extends LitElement {
       #project-name {
         font-size: 24px;
         font-weight: 600;
+        color: #1b264f;
+        text-decoration: none;
+      }
+
+      #project-name:hover {
+        color: #000000;
       }
 
       #badges {
@@ -98,36 +107,61 @@ export class ProjectCard extends LitElement {
     `,
   ];
 
+  @property()
+  projectSetting: Project = {} as Project;
+
   render() {
     return html`
-      <div id="color-identity"></div>
+      <div
+        id="color-identity"
+        style="background-color: ${this.projectSetting.colorId}"
+      ></div>
       <div id="header">
         <div id="header-content">
-          <a id="project-name">Anubias market</a>
+          <a id="project-name" href="/project/${this.projectSetting.id}"
+            >${this.projectSetting.name}</a
+          >
           <div id="badges">
-            <badge-element .badgeText=${'Cloud'}></badge-element>
-            <badge-element .badgeText=${'Standard'}></badge-element>
+            ${repeat(
+              this.projectSetting.badges,
+              badge => badge.type,
+              badge =>
+                html`<badge-element .badgeText=${badge.type}></badge-element>`
+            )}
           </div>
         </div>
         <div id="stats">
           <div class="stat">
-            <progress-circle .progress=${20}></progress-circle>
+            <progress-circle
+              .value=${this.projectSetting.bandwidthUsed}
+            ></progress-circle>
             <div class="stat-title">Bandwidth</div>
           </div>
           <div class="stat">
-            <progress-circle .progress=${50}></progress-circle>
+            <progress-circle
+              .value=${this.projectSetting.storageUsed}
+            ></progress-circle>
             <div class="stat-title">Storage</div>
           </div>
           <div class="stat">
-            <progress-circle .progress=${90}></progress-circle>
+            <progress-circle
+              .value=${this.projectSetting.domainsUsed}
+              .domain=${true}
+            ></progress-circle>
             <div class="stat-title">Domains</div>
           </div>
         </div>
       </div>
       <div id="environments">
-        <environment-badge class="env"></environment-badge>
-        <environment-badge class="env"></environment-badge>
-        <environment-badge class="env"></environment-badge>
+        ${repeat(
+          this.projectSetting.environments,
+          env => env.type,
+          env =>
+            html`<environment-badge
+              class="env"
+              .environmentSetting=${env}
+            ></environment-badge>`
+        )}
       </div>
       <div id="drag">
         <svg
