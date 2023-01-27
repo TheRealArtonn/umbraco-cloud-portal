@@ -1,12 +1,12 @@
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { subpageFixture } from '../../api/api-subpages.fixture';
-import { Category } from '../../api/api.resource';
+import { projectGroupFixture } from '../../api/api-projectGroup.fixture';
+import { Category, ProjectGroup } from '../../api/api.resource';
 
 import defaultCSS from '../default-css';
 
-export class SideMenu extends LitElement {
+export class SideMenuProject extends LitElement {
   static styles = [
     defaultCSS,
     css`
@@ -37,16 +37,19 @@ export class SideMenu extends LitElement {
   @state()
   _subpageSettings: Array<Category> = [];
 
+  @state()
+  _projectGroupSettings: Array<ProjectGroup> = [];
+
   firstUpdated() {
     this.getData();
   }
 
   private async getData() {
     try {
-      const [subpageSettings] = await Promise.all([subpageFixture]);
+      const [projectGroupSettings] = await Promise.all([projectGroupFixture]);
 
-      if (subpageSettings) {
-        this._subpageSettings = subpageSettings;
+      if (projectGroupSettings) {
+        this._projectGroupSettings = projectGroupSettings;
       }
     } catch (error) {
       console.log('Projects could not be fetched');
@@ -64,13 +67,13 @@ export class SideMenu extends LitElement {
     return html`
       <aside>
         ${repeat(
-          this._subpageSettings,
+          this._projectGroupSettings,
           category => category.name,
           category =>
-            html`<accordion-element
+            html`<accordion-project-element
               .projectId=${this.projectId}
               .categorySetting=${category}
-            ></accordion-element>`
+            ></accordion-project-element>`
         )}
       </aside>
     `;

@@ -1,4 +1,4 @@
-import '../../shared/side-menu';
+import '../../shared/side-menu-project-subpages';
 import '../../components/header-container';
 import '../../components/page-container';
 

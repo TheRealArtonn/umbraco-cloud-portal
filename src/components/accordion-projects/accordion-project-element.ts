@@ -1,22 +1,16 @@
 import { css, html, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { ProjectItem } from '../project-sidemenu.resource';
-import { icons } from '../svg/icons';
+import { projectsFixture } from '../../api/api-projects.fixture';
+import { Project, ProjectGroup } from '../../api/api.resource';
 
-export class UCPProjectSideMenuProjectAccordionElement extends LitElement {
+import defaultCSS from '../../shared/default-css';
+import { medium } from '../../shared/svg/icons';
+
+export class AccordionProjectElement extends LitElement {
   static styles = [
+    defaultCSS,
     css`
-      :host {
-        display: block;
-        margin: 0 auto;
-        max-width: 1024px;
-      }
-
-      svg {
-        fill: currentColor;
-      }
-
       #accordion {
         margin-bottom: 40px;
       }
@@ -68,13 +62,17 @@ export class UCPProjectSideMenuProjectAccordionElement extends LitElement {
         background-color: #ebebeb;
         margin-right: 25px;
         margin-left: 11px;
-        margin-bottom: 21px;
+        margin-bottom: 22px;
       }
 
       #subpages {
         display: flex;
         flex-direction: column;
         flex: 1 1 0%;
+      }
+
+      #subpages a {
+        text-decoration: none;
       }
 
       #subpage-item {
@@ -107,14 +105,42 @@ export class UCPProjectSideMenuProjectAccordionElement extends LitElement {
     `,
   ];
 
-  @property({ attribute: false })
-  category: ProjectItem | null = null;
+  @property({ type: String, attribute: 'project-id' })
+  projectId: string = '';
 
   @property()
-  categoryActive: boolean = true;
+  categorySetting: ProjectGroup = {} as ProjectGroup;
+
+  @property()
+  categoryActive: boolean = false;
+
+  @state()
+  _projectsSettings: Array<Project> = [];
+
+  firstUpdated() {
+    this.getData();
+  }
 
   private _changeCategoryActive() {
     this.categoryActive = !this.categoryActive;
+  }
+
+  private async getData() {
+    try {
+      const [projectsSettings] = await Promise.all([projectsFixture]);
+
+      if (projectsSettings) {
+        this._projectsSettings = projectsSettings;
+      }
+    } catch (error) {
+      console.log('Projects could not be fetched');
+    }
+  }
+
+  get currentProject() {
+    return this._projectsSettings.find(
+      project => project.id === this.projectId
+    );
   }
 
   render() {
@@ -126,26 +152,30 @@ export class UCPProjectSideMenuProjectAccordionElement extends LitElement {
           @click=${this._changeCategoryActive}
         >
           <div id="accordion-header-text">
-            <div id="cat-icon">${icons['group']}</div>
-            <div>${this.category?.name}</div>
+            <div id="cat-icon">${medium['group']}</div>
+            <div>${this.categorySetting?.name}</div>
           </div>
-          <div id="acc-icon">${icons['arrow']}</div>
+          <div id="acc-icon">${medium['arrow']}</div>
         </div>
         ${this.categoryActive
           ? html`
               <div id="subpage-container">
                 <div id="subpage-line"></div>
                 <div id="subpages">
-                  ${this.category
+                  ${this.categorySetting
                     ? repeat(
-                        this.category.projects,
-                        project => project.name,
-                        project =>
+                        this.categorySetting.projects,
+                        subpage => subpage.id,
+                        subpage =>
                           html`
-                            <div id="subpage-item">
-                              <div id="subpage-item-line"></div>
-                              ${project.name}
-                            </div>
+                            <a href="project/${subpage.id}/">
+                              <div id="subpage-item">
+                                <div id="subpage-item-line"></div>
+                                ${this._projectsSettings.find(
+                                  project => project.id === subpage.id
+                                )?.name}
+                              </div>
+                            </a>
                           `
                       )
                     : ''}

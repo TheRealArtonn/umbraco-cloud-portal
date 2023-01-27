@@ -38,24 +38,16 @@ export interface Category {
 
 export interface Subpage {
   name: string;
+  path: string;
   content: string;
 }
 
-// export interface Subpage {
-//   name: string;
-// }
+export interface ProjectGroup {
+  name: string;
+  colorId: string;
+  projects: ProjectGroupProjects[];
+}
 
-// export interface MenuItem {
-//   name: string;
-//   icon: string;
-//   subpages: Subpage[];
-// }
-
-// export interface Project {
-//   name: string;
-// }
-
-// export interface ProjectItem {
-//   name: string;
-//   projects: Project[];
-// }
+export interface ProjectGroupProjects {
+  id: string;
+}

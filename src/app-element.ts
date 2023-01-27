@@ -49,9 +49,7 @@ export class App extends LitElement {
 
     this.location = this.router.location;
   }
-  willUpdate() {
-    // this.location.getUrl();
-  }
+
   onAfterEnter(location: RouterLocation) {
     // this.projectId = String(location.params.alias);
     console.log(location);
@@ -78,6 +76,7 @@ export class App extends LitElement {
       }
     `,
   ];
+  // Current location URL ${this.location?.getUrl()}
 
   render() {
     return html`

@@ -1,4 +1,4 @@
-import '../../shared/side-menu';
+import '../../shared/side-menu-project';
 import '../../components/project-card';
 
 import { DashboardElement } from './dashboard.js';

@@ -53,7 +53,7 @@ export class DashboardElement extends LitElement {
 
   render() {
     return html`
-      <side-menu page=${this.page}></side-menu>
+      <side-menu-project page=${this.page}></side-menu-project>
       <main>
         <div id="page">
           <div id="group">

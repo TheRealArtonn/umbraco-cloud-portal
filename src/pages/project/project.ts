@@ -88,7 +88,9 @@ export class ProjectElement extends LitElement {
 
   render() {
     return html`
-      <side-menu .projectId=${this._projectSetting.id}></side-menu>
+      <side-menu-project-subpages
+        .projectId=${this._projectSetting.id}
+      ></side-menu-project-subpages>
       <main>
         <div id="page">
           <header-container

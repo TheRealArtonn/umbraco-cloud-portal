@@ -1,8 +1,9 @@
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { projectGroupFixture } from '../../api/api-projectGroup.fixture';
 import { subpageFixture } from '../../api/api-subpages.fixture';
-import { Category } from '../../api/api.resource';
+import { Category, ProjectGroup } from '../../api/api.resource';
 
 import defaultCSS from '../default-css';
 
@@ -11,16 +12,21 @@ export class SideMenu extends LitElement {
     defaultCSS,
     css`
       :host {
-        width: 326px;
         height: calc(100vh - 90px);
+        display: flex;
       }
 
       aside {
-        width: 100%;
+        width: 326px;
         height: 100%;
         background-color: var(--uui-color-surface, #ffffff);
         padding: 30px;
         overflow: hidden;
+      }
+      #divider {
+        width: 1px;
+        height: 100%;
+        background-color: #ececec;
       }
     `,
   ];
@@ -37,16 +43,26 @@ export class SideMenu extends LitElement {
   @state()
   _subpageSettings: Array<Category> = [];
 
+  @state()
+  _projectGroupSettings: Array<ProjectGroup> = [];
+
   firstUpdated() {
     this.getData();
   }
 
   private async getData() {
     try {
-      const [subpageSettings] = await Promise.all([subpageFixture]);
+      const [subpageSettings, projectGroupSettings] = await Promise.all([
+        subpageFixture,
+        projectGroupFixture,
+      ]);
 
       if (subpageSettings) {
         this._subpageSettings = subpageSettings;
+      }
+
+      if (projectGroupSettings) {
+        this._projectGroupSettings = projectGroupSettings;
       }
     } catch (error) {
       console.log('Projects could not be fetched');
@@ -62,6 +78,18 @@ export class SideMenu extends LitElement {
 
   render() {
     return html`
+      <aside>
+        ${repeat(
+          this._projectGroupSettings,
+          category => category.name,
+          category =>
+            html`<accordion-project-element
+              .projectId=${this.projectId}
+              .categorySetting=${category}
+            ></accordion-project-element>`
+        )}
+      </aside>
+      <div id="divider"></div>
       <aside>
         ${repeat(
           this._subpageSettings,
