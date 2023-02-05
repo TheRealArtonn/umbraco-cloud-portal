@@ -111,7 +111,7 @@ export class AccordionProjectElement extends LitElement {
   @property()
   categorySetting: ProjectGroup = {} as ProjectGroup;
 
-  @property()
+  @property({ type: Boolean, reflect: true })
   categoryActive: boolean = false;
 
   @state()
@@ -123,6 +123,14 @@ export class AccordionProjectElement extends LitElement {
 
   private _changeCategoryActive() {
     this.categoryActive = !this.categoryActive;
+
+    this.dispatchEvent(
+      new CustomEvent('accordion-project:selected', {
+        composed: true,
+        bubbles: true,
+        detail: this.categorySetting?.name,
+      })
+    );
   }
 
   private async getData() {

@@ -25,8 +25,8 @@ export class ButtonMedium extends LitElement {
         align-items: center;
       }
 
-      #button:hover,
-      #button.active {
+      :host([active]) #button,
+      #button:hover {
         color: #39477c;
         background-color: #ffffff;
         border: 0px;
@@ -44,8 +44,8 @@ export class ButtonMedium extends LitElement {
     `,
   ];
 
-  @property()
-  active: string | undefined = undefined;
+  @property({ type: Boolean, reflect: true })
+  active: boolean = false;
 
   @property()
   link: string | undefined = undefined;
@@ -54,11 +54,7 @@ export class ButtonMedium extends LitElement {
   icon: string = '';
 
   render() {
-    return html` <a
-      id="button"
-      class=${ifDefined(this.active)}
-      href=${ifDefined(this.link)}
-    >
+    return html` <a id="button" href=${ifDefined(this.link)}>
       ${smallIcons[this.icon]}
     </a>`;
   }

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
-import { Router, RouterLocation } from '@vaadin/router';
+import { property, state } from 'lit/decorators.js';
+import { Router } from '@vaadin/router';
 import defaultCSS from './shared/default-css';
 
 export class App extends LitElement {
@@ -10,13 +10,20 @@ export class App extends LitElement {
   @property({ type: Object })
   location: any;
 
-  firstUpdated() {
+  @state()
+  private _activePageName = '';
+
+  async firstUpdated() {
     this.router = new Router(
       this.shadowRoot!.getElementById('container') as HTMLElement
     );
-    this.router.setRoutes([
-      { path: '/', component: 'dashboard-element' },
-      { path: '/organization', component: 'organization-element' },
+    await this.router.setRoutes([
+      { path: '/', name: 'root', component: 'dashboard-element' },
+      {
+        path: '/organization',
+        name: 'organization',
+        component: 'organization-element',
+      },
       {
         path: '/project/',
         component: 'project-element',
@@ -27,18 +34,22 @@ export class App extends LitElement {
             children: [
               {
                 path: '/',
+                name: 'Overview',
                 component: 'project-overview',
               },
               {
                 path: '/environments',
+                name: 'Environments',
                 component: 'project-environments',
               },
               {
                 path: '/edit-teams',
+                name: 'Edit teams',
                 component: 'project-edit-teams',
               },
               {
                 path: '/usage',
+                name: 'Usage',
                 component: 'project-usage',
               },
             ],
@@ -47,14 +58,10 @@ export class App extends LitElement {
       },
     ]);
 
-    this.location = this.router.location;
-  }
+    window.umbracoCloudPortal.router = this.router;
 
-  onAfterEnter(location: RouterLocation) {
-    // this.projectId = String(location.params.alias);
-    console.log(location);
-    // console.log(commands);
-    // console.log(router);
+    this.location = this.router.location;
+    this._activePageName = this.location.route.name;
   }
 
   static styles = [
@@ -76,12 +83,23 @@ export class App extends LitElement {
       }
     `,
   ];
-  // Current location URL ${this.location?.getUrl()}
 
   render() {
     return html`
-      <navigation-header></navigation-header>
+      <navigation-header
+        .activePage=${this._activePageName}
+      ></navigation-header>
       <div id="container"></div>
     `;
+  }
+}
+
+export interface UmbracoCloudPortal {
+  router: Router | null;
+}
+
+declare global {
+  interface Window {
+    umbracoCloudPortal: UmbracoCloudPortal;
   }
 }

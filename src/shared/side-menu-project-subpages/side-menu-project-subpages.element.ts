@@ -1,4 +1,5 @@
 import { css, html, LitElement } from 'lit';
+import { Router } from '@vaadin/router';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { projectGroupFixture } from '../../api/api-projectGroup.fixture';
@@ -28,6 +29,10 @@ export class SideMenu extends LitElement {
         height: 100%;
         background-color: #ececec;
       }
+
+      #collapse-button {
+        margin-bottom: 30px;
+      }
     `,
   ];
 
@@ -46,8 +51,37 @@ export class SideMenu extends LitElement {
   @state()
   _projectGroupSettings: Array<ProjectGroup> = [];
 
+  @state()
+  _projectMenuState: boolean = false;
+
+  @property()
+  activeAccordion: string = 'General';
+
+  @property()
+  activeSubpage: string = 'Overview';
+
+  @property()
+  activeAccordionProject: string = 'East clients';
+
   firstUpdated() {
     this.getData();
+  }
+
+  router?: Router;
+  popstateHandler = () => {
+    this.activeSubpage =
+      window.umbracoCloudPortal.router?.location.route?.name ?? '';
+  };
+  connectedCallback(): void {
+    super.connectedCallback();
+    // @ts-ignore
+    this.router = window.umbracoCloudPortal.router;
+    window.addEventListener('popstate', this.popstateHandler);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener('popstate', this.popstateHandler);
   }
 
   private async getData() {
@@ -69,28 +103,44 @@ export class SideMenu extends LitElement {
     }
   }
 
-  // private _setPage(subPage) {
-  //   this.subPage = subPage;
-  //   console.log(this.subPage);
-  // }
+  private _changeProjectMenuState() {
+    this._projectMenuState = !this._projectMenuState;
+  }
 
-  // private _closeAllOthers() {}
+  private _handleSelectAccordion(e) {
+    this.activeAccordion = e.detail;
+  }
+
+  private _handleSelectAccordionProject(e) {
+    this.activeAccordionProject = e.detail;
+  }
 
   render() {
     return html`
+      ${this._projectMenuState
+        ? html` <aside>
+              ${repeat(
+                this._projectGroupSettings,
+                category => category.name,
+                category =>
+                  html`<accordion-project-element
+                    .projectId=${this.projectId}
+                    .categorySetting=${category}
+                    @accordion-project:selected=${this
+                      ._handleSelectAccordionProject}
+                    .categoryActive=${this.activeAccordionProject ===
+                    category.name}
+                  ></accordion-project-element>`
+              )}
+            </aside>
+            <div id="divider"></div>`
+        : ''}
       <aside>
-        ${repeat(
-          this._projectGroupSettings,
-          category => category.name,
-          category =>
-            html`<accordion-project-element
-              .projectId=${this.projectId}
-              .categorySetting=${category}
-            ></accordion-project-element>`
-        )}
-      </aside>
-      <div id="divider"></div>
-      <aside>
+        <collapse-button
+          id="collapse-button"
+          @click=${this._changeProjectMenuState}
+          .active=${this._projectMenuState}
+        ></collapse-button>
         ${repeat(
           this._subpageSettings,
           category => category.name,
@@ -98,6 +148,9 @@ export class SideMenu extends LitElement {
             html`<accordion-element
               .projectId=${this.projectId}
               .categorySetting=${category}
+              @accordion:selected=${this._handleSelectAccordion}
+              .categoryActive=${this.activeAccordion === category.name}
+              .activeSubpage=${this.activeSubpage}
             ></accordion-element>`
         )}
       </aside>

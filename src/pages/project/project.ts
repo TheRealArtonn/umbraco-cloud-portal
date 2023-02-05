@@ -33,9 +33,6 @@ export class ProjectElement extends LitElement {
   @property({ type: String, attribute: 'page' })
   page: string = 'project';
 
-  @property()
-  subpage: string = 'Overview';
-
   @property({ type: String, attribute: 'project-id' })
   projectId: string = '';
 
@@ -44,16 +41,6 @@ export class ProjectElement extends LitElement {
 
   @state()
   _subpageSettings: Array<Category> = [];
-
-  // connectedCallback(): void {
-  //   window.addEventListener('popstate', event => {
-  //     console.log(
-  //       `location: ${document.location}, state: ${JSON.stringify(event.state)}`
-  //     );
-  //   });
-  // }
-
-  // disconnectedCallback(): void {}
 
   firstUpdated() {
     this.getData();

@@ -1,4 +1,4 @@
-import { EmptyCommands, Router, RouterLocation } from '@vaadin/router';
+import { Router } from '@vaadin/router';
 import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
@@ -42,44 +42,28 @@ export class NavigationHeader extends LitElement {
     `,
   ];
 
-  //   @property({ type: String, attribute: 'project-id' })
-  //   projectId: string = '';
+  router?: Router;
+  popstateHandler = () => {
+    this.activePage =
+      window.umbracoCloudPortal.router?.location.route?.name ?? '';
+  };
+  connectedCallback(): void {
+    super.connectedCallback();
+    // @ts-ignore
+    this.router = window.umbracoCloudPortal.router;
+    window.addEventListener('popstate', this.popstateHandler);
+  }
 
-  //   @state()
-  //   private _menuItems: Array<MenuItem> = [];
-
-  //   @state()
-  //   private _projectItem: Array<ProjectItem> = [];
-
-  //   connectedCallback(): void {
-  //     super.connectedCallback();
-  //     this.getData();
-  //   }
-
-  //   private async getData() {
-  //     try {
-  //       const [menuItems, projectItems] = await Promise.all([
-  //         fakeMenuFixture,
-  //         fakeProjectsFixture,
-  //       ]);
-
-  //       this._menuItems = menuItems;
-  //       this._projectItem = projectItems;
-  //     } catch (error) {}
-  //   }
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    window.removeEventListener('popstate', this.popstateHandler);
+  }
 
   @property()
   page: string = '';
 
-  onAfterEnter(
-    location: RouterLocation,
-    commands: EmptyCommands,
-    router: Router
-  ) {
-    console.log(location);
-    console.log(commands);
-    console.log(router);
-  }
+  @property()
+  activePage: string = '';
 
   render() {
     return html`
@@ -93,12 +77,16 @@ export class NavigationHeader extends LitElement {
           <button-medium .icon=${'add'}></button-medium>
           <button-medium .icon=${'search'}></button-medium>
           <div class="separator"></div>
-          <button-medium 
-            .link=${'/'} 
+          <button-medium
+            .link=${'/'}
             .icon=${'projects'}
-            .active=${this.page === 'dashboard' ? 'active' : undefined}
+            .active=${this.activePage === 'root'}
           ></button-medium>
-          <button-medium .link=${'/organization/'} .icon=${'organization'}></button-medium>></button-medium>
+          <button-medium
+            .link=${'/organization/'}
+            .icon=${'organization'}
+            .active=${this.activePage === 'organization'}
+          ></button-medium>
           <div class="separator"></div>
           <button-medium .icon=${'notifications'}></button-medium>
           <button-medium .icon=${'notifications'}></button-medium>

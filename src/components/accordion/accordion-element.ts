@@ -68,29 +68,6 @@ export class AccordionElement extends LitElement {
         flex-direction: column;
         flex: 1 1 0%;
       }
-
-      #subpages a {
-        text-decoration: none;
-      }
-
-      #subpage-item {
-        font-size: 16px;
-        height: 45px;
-        color: #a5acc9;
-        border-radius: 14px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        padding-top: 1px;
-        padding-left: 20px;
-        cursor: pointer;
-      }
-
-      #subpage-item:hover {
-        font-weight: 700;
-        color: #1b264f;
-        background-color: #f3f4f6;
-      }
     `,
   ];
 
@@ -100,8 +77,11 @@ export class AccordionElement extends LitElement {
   @property()
   categorySetting: Category = {} as Category;
 
-  @property()
+  @property({ type: Boolean, reflect: true })
   categoryActive: boolean = false;
+
+  @property()
+  activeSubpage: string = 'Overview';
 
   @state()
   private _categoryIcon = 'advanced';
@@ -112,6 +92,24 @@ export class AccordionElement extends LitElement {
 
   private _changeCategoryActive() {
     this.categoryActive = !this.categoryActive;
+
+    this.dispatchEvent(
+      new CustomEvent('accordion:selected', {
+        composed: true,
+        bubbles: true,
+        detail: this.categorySetting?.name,
+      })
+    );
+  }
+
+  private _state(forwarded, fixture) {
+    if (forwarded === fixture) {
+      return true;
+    }
+    if (forwarded === '' && fixture === 'Overview') {
+      return true;
+    }
+    return false;
   }
 
   render() {
@@ -139,9 +137,14 @@ export class AccordionElement extends LitElement {
                         subpage => subpage.name,
                         subpage =>
                           html`
-                            <a href="project/${this.projectId}/${subpage.path}"
-                              ><div id="subpage-item">${subpage.name}</div>
-                            </a>
+                            <accordion-item
+                              .projectId=${this.projectId}
+                              .subpageSetting=${subpage}
+                              .active=${this._state(
+                                this.activeSubpage,
+                                subpage.name
+                              )}
+                            ></accordion-item>
                           `
                       )
                     : ''}
